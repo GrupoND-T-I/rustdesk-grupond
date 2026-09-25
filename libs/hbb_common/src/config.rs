@@ -2535,7 +2535,11 @@ pub fn is_disable_account() -> bool {
 
 #[inline]
 pub fn is_disable_installation() -> bool {
-    option_env!("RS_DISABLE_SETTINGS").is_some()
+    // GrupoND: desacoplado de RS_DISABLE_SETTINGS. O client trava as settings da UI
+    // para o usuario final, mas PRECISA permitir instalar como servico SYSTEM (o que
+    // faz o UAC do rustdesk.exe deixar de aparecer). Nenhum workflow define
+    // RS_DISABLE_INSTALL, entao o botao Instalar volta a aparecer.
+    option_env!("RS_DISABLE_INSTALL").is_some()
 }
 
 // This function must be kept the same as the one in flutter and sciter code.
