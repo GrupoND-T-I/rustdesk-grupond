@@ -36,5 +36,14 @@ target_compile_definitions(${BINARY_NAME} PRIVATE "NOMINMAX")
 target_link_libraries(${BINARY_NAME} PRIVATE flutter flutter_wrapper_app)
 target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 
+# GrupoND: eleva o nivel de execucao para highestAvailable pelo linker (evita o
+# conflito de manifesto do mt.exe / LNK1327 que da ao editar runner.exe.manifest).
+# Faz a instancia elevada por credenciais (Request Elevation -> transmitir usuario/
+# senha de admin) rodar em alta integridade, que entao escala para SYSTEM e alcanca
+# o UAC/secure desktop. Usuario padrao abre sem prompt; admin local recebe UAC ao abrir.
+if(MSVC)
+  target_link_options(${BINARY_NAME} PRIVATE "/MANIFESTUAC:\"level='highestAvailable' uiAccess='false'\"")
+endif()
+
 # Run the Flutter tool portions of the build. This must not be removed.
 add_dependencies(${BINARY_NAME} flutter_assemble)
